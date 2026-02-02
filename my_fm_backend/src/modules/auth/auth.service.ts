@@ -15,6 +15,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async getMe(userId: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'email', 'createdAt'],
+    });
+
+    return user;
+  }
+
   async login(email: string, password: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
@@ -33,11 +42,11 @@ export class AuthService {
     const payload = { sub: user.id };
 
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '15m',
+      expiresIn: Number(jwtConfig.accessTokenExpiresIn),
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: '7d',
+      expiresIn: Number(jwtConfig.refreshTokenExpiresIn),
     });
 
     return {
