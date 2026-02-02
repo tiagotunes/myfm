@@ -1,5 +1,5 @@
 export const jwtConfig = {
-  secret: 'SUPER_SECRET_KEY', // env var later
-  accessTokenExpiresIn: '15m',
-  refreshTokenExpiresIn: '7d',
+  secret: process.env.JWT_SECRET,
+  accessTokenExpiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRY,
+  refreshTokenExpiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRY,
 };
