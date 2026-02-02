@@ -3,18 +3,20 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Get, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthUserId } from './decorators/auth-user-id.decorator';
+import { Public } from './decorators/public.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
-  getMe(@CurrentUser() user: { userId: string }) {
-    return this.authService.getMe(user.userId);
+  getMe(@AuthUserId() userId: string) {
+    return this.authService.getMe(userId);
   }
 
+  @Public()
   @Post('login')
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
