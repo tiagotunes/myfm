@@ -1,0 +1,13 @@
+services:
+  db:
+    ports:
+      - '5432:5432'
+
+  api:
+    build: .
+    command: npm run start:dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
