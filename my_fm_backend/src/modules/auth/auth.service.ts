@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -6,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { User } from './entities/user.entity';
 import { jwtConfig } from '../../config/jwt.config';
+import { MeDto } from './dto/me.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +20,21 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getMe(userId: string) {
+  async getMe(userId: string): Promise<MeDto> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
-      select: ['id', 'email', 'createdAt'],
+      select: [
+        'id',
+        'email',
+        'displayName',
+        'avatarUrl',
+        'language',
+        'theme',
+        'role',
+      ],
     });
+
+    if (!user) throw new NotFoundException('User not found');
 
     return user;
   }
@@ -39,12 +54,14 @@ export class AuthService {
       throw new UnauthorizedException('Password is incorrect');
     }
 
-    const payload = { sub: user.id };
+    // Update lastLoginAt
+    user.lastLoginAt = new Date();
+    await this.usersRepository.save(user);
 
+    const payload = { sub: user.id };
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: Number(jwtConfig.accessTokenExpiresIn),
     });
-
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: Number(jwtConfig.refreshTokenExpiresIn),
     });
