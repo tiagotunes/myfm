@@ -1,13 +1,31 @@
 services:
   db:
+    container_name: myfm-db
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   api:
     build: .
-    command: npm run start:dev
+    container_name: myfm-api
+    image: myfm-api
     volumes:
       - .:/app
       - /app/node_modules
     ports:
-      - '3000:3000'
+      - '${API_PORT}:${API_PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

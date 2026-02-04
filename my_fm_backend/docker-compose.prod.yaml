@@ -1,6 +1,0 @@
-services:
-  api:
-    image: myfm-api:latest
-    command: node dist/main.js
-    ports:
-      - '3000:3000'

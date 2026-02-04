@@ -2,7 +2,7 @@
 FROM node:20-alpine
 
 # Set working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -13,11 +13,8 @@ RUN npm install
 # Copy the rest of the app
 COPY . .
 
-# Build TypeScript
-RUN npm run build
-
 # Expose port
 EXPOSE 3000
 
 # Run the app
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:dev"]
