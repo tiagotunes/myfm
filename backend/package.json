@@ -1,5 +1,5 @@
 {
-  "name": "my_fm_backend",
+  "name": "myfm_backend",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -8,7 +8,7 @@
   "scripts": {
     "api:bash": "docker compose -f docker-compose.dev.yaml exec api sh",
     "build": "nest build",
-    "db:migration:generate": "docker compose -f docker-compose.dev.yaml exec api npm run migration:generate",
+    "db:migration:generate": "docker compose -f docker-compose.dev.yaml exec api npm run typeorm -- migration:generate src/migrations/<> -d src/data-source.ts",
     "db:migration:run": "docker compose -f docker-compose.dev.yaml exec api npm run migration:run",
     "db:seed:users": "docker compose -f docker-compose.dev.yaml exec api npm run seed:users",
     "dev": "docker compose -f docker-compose.dev.yaml up --build",
@@ -20,10 +20,10 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "logs": "docker compose -f docker-compose.dev.yaml logs -f api",
-    "migration:generate": "npm run typeorm -- migration:generate src/migrations/InitSchema -d src/data-source.ts",
     "migration:run": "npm run typeorm -- migration:run -d src/data-source.ts",
     "psql": "docker compose -f docker-compose.dev.yaml exec db psql -U myfm -d myfm_dev",
     "reset": "docker compose -f docker-compose.dev.yaml down -v --rmi all",
+    "reset:full": "npm run reset && rm -rf src/migrations/",
     "seed:users": "ts-node src/seeds/seed-users.ts",
     "test": "jest",
     "test:watch": "jest --watch",

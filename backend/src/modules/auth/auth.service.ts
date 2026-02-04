@@ -23,15 +23,7 @@ export class AuthService {
   async getMe(userId: string): Promise<MeDto> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
-      select: [
-        'id',
-        'email',
-        'displayName',
-        'avatarUrl',
-        'language',
-        'theme',
-        'role',
-      ],
+      select: ['id', 'email', 'displayName', 'language', 'theme', 'role'],
     });
 
     if (!user) throw new NotFoundException('User not found');

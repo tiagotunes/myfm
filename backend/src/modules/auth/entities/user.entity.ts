@@ -36,9 +36,6 @@ export class User {
   @Column({ name: 'display_name', length: 50 })
   displayName: string;
 
-  @Column({ name: 'avatar_url', nullable: true })
-  avatarUrl?: string;
-
   @Column({ name: 'bio', length: 160, nullable: true })
   bio?: string;
 
