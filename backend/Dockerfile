@@ -1,20 +1,14 @@
-# Base image
-FROM node:20-alpine
+FROM node:20
 
-# Set working directory
+# Create app directory inside container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Install dependencies first (better caching)
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the app
-COPY . .
-
-# Expose port
+# Source code will be mounted via volume in docker-compose
 EXPOSE 3000
 
-# Run the app
+# Start Nest in watch mode
 CMD ["npm", "run", "start:dev"]
