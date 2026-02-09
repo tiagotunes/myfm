@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './modules/auth/auth.module';
 import { databaseConfig } from './config/database.config';
+import { LoggingModule } from './modules/logging/logging.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { databaseConfig } from './config/database.config';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(databaseConfig),
+    LoggingModule,
     AuthModule,
   ],
 })

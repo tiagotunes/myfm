@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { User } from './modules/auth/entities/user.entity';
+import { ErrorLog } from './modules/logging/entities/error-log.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -9,7 +10,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [User],
+  entities: [User, ErrorLog],
   migrations: ['src/migrations/*.ts'],
   migrationsRun: true,
 });

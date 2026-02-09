@@ -7,10 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-
 import { User } from './entities/user.entity';
 import { jwtConfig } from '../../config/jwt.config';
 import { MeDto } from './dto/me.dto';
+import { ErrorCode } from 'src/common/errors/error-codes';
 
 @Injectable()
 export class AuthService {
@@ -23,10 +23,14 @@ export class AuthService {
   async getMe(userId: string): Promise<MeDto> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
-      select: ['id', 'email', 'displayName', 'language', 'theme', 'role'],
+      select: ['id', 'email', 'displayName', 'role', 'isActive'],
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user)
+      throw new UnauthorizedException({
+        code: ErrorCode.AUTH_INVALID_CREDENTIALS,
+        message: ErrorCode.AUTH_INVALID_CREDENTIALS,
+      });
 
     return user;
   }
@@ -37,16 +41,21 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException({
+        code: ErrorCode.AUTH_INVALID_CREDENTIALS,
+        message: ErrorCode.AUTH_INVALID_CREDENTIALS,
+      });
     }
 
     const passwordValid = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordValid) {
-      throw new UnauthorizedException('Password is incorrect');
+      throw new UnauthorizedException({
+        code: ErrorCode.AUTH_INVALID_CREDENTIALS,
+        message: ErrorCode.AUTH_INVALID_CREDENTIALS,
+      });
     }
 
-    // Update lastLoginAt
     user.lastLoginAt = new Date();
     await this.usersRepository.save(user);
 

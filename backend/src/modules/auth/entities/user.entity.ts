@@ -27,16 +27,13 @@ export class User {
   @Column({ name: 'password_hash', length: 255 })
   passwordHash: string;
 
-  @Column({ name: 'email_verified', default: false })
-  emailVerified: boolean;
-
   /*--------------------------------------------------
   | PROFILE                                          |
   --------------------------------------------------*/
   @Column({ name: 'display_name', length: 50 })
   displayName: string;
 
-  @Column({ name: 'bio', length: 160, nullable: true })
+  @Column({ length: 160, nullable: true })
   bio?: string;
 
   @Column({ name: 'country_code', length: 2, nullable: true })
@@ -45,10 +42,10 @@ export class User {
   /*--------------------------------------------------
   | PREFERENCES                                      |
   --------------------------------------------------*/
-  @Column({ name: 'language', length: 5, default: 'en' })
+  @Column({ length: 5, default: 'en' })
   language: string;
 
-  @Column({ name: 'theme', default: 'system' })
+  @Column({ default: 'system' })
   theme: 'light' | 'dark' | 'system';
 
   /*--------------------------------------------------
@@ -64,6 +61,9 @@ export class User {
   /*--------------------------------------------------
   | ACCOUNT STATUS                                   |
   --------------------------------------------------*/
+  @Column({ name: 'email_verified', default: false })
+  emailVerified: boolean;
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
