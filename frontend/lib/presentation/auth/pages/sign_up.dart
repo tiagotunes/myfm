@@ -70,7 +70,7 @@ class SignUpPage extends StatelessWidget {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                AppNavigation.push(context, const SignInPage());
+                AppNavigation.push(context, SignInPage());
               },
           ),
         ],

@@ -19,7 +19,7 @@ class SplashPage extends StatelessWidget {
           if (state is AuthenticatedState) {
             AppNavigation.pushReplacement(context, const HomePage());
           } else if (state is UnauthenticatedState) {
-            AppNavigation.pushReplacement(context, const SignInPage());
+            AppNavigation.pushReplacement(context, SignInPage());
           }
         },
         child: Stack(

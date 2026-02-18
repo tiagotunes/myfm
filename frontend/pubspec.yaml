@@ -38,27 +38,12 @@ dependencies:
   # State management
   flutter_bloc: ^8.1.2
 
-  # Comparing dart objects
-  equatable: ^2.0.5
-
-  # Service locator
-  get_it: ^7.6.0
-
-  # Date formatting
-  intl: ^0.18.1
-
-  # Make requests to the API
-  dio: ^5.4.0
-
-  # Hooks
-  flutter_hooks: ^0.18.3
-
-  # Cached image
-  cached_network_image: ^3.2.0
-
   retrofit: ^4.9.0
   logger: ^2.6.0
   reactive_button: ^0.0.9
+  dartz: ^0.10.1
+  dio: ^5.9.1
+  get_it: ^9.2.0
 
 dev_dependencies:
   flutter_test:
@@ -70,8 +55,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
-  retrofit_generator: ^10.0.1
-  build_runner: ^2.6.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

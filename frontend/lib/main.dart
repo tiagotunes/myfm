@@ -4,8 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_fm/core/configs/theme/app_theme.dart';
 import 'package:my_fm/presentation/splash/bloc/splash_cubit.dart';
 import 'package:my_fm/presentation/splash/pages/splash.dart';
+import 'package:my_fm/service_locator.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   runApp(const MyApp());
 }
 

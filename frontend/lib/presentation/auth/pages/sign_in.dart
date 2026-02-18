@@ -2,11 +2,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:my_fm/common/helper/navigation/app_navigation.dart';
 import 'package:my_fm/core/configs/theme/app_colors.dart';
+import 'package:my_fm/data/auth/models/sign_in_request.dart';
+import 'package:my_fm/domain/auth/usecases/sign_in_uc.dart';
 import 'package:my_fm/presentation/auth/pages/sign_up.dart';
+import 'package:my_fm/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+  SignInPage({super.key});
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +46,31 @@ class SignInPage extends StatelessWidget {
   }
 
   Widget _emailField() {
-    return const TextField(decoration: InputDecoration(hintText: 'Email'));
+    return TextField(
+      controller: _emailController,
+      decoration: const InputDecoration(hintText: 'Email'),
+    );
   }
 
   Widget _passwordField() {
-    return const TextField(decoration: InputDecoration(hintText: 'Password'));
+    return TextField(
+      controller: _passwordController,
+      decoration: const InputDecoration(hintText: 'Password'),
+    );
   }
 
   Widget _signInButton() {
     return ReactiveButton(
       title: 'Sign In',
       activeColor: AppColors.primary,
-      onPressed: () async {},
+      onPressed: () async {
+        await sl<SignInUseCase>().call(
+          SignInRequest(
+            email: _emailController.text,
+            password: _passwordController.text,
+          ),
+        );
+      },
       onSuccess: () {},
       onFailure: (error) {},
     );
