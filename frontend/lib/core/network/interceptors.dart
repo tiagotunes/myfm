@@ -11,19 +11,19 @@ class LoggerInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
     final requestPath = '${options.baseUrl}${options.path}';
-    logger.e('${options.method} request ==> $requestPath'); //Error log
+    logger.e('${options.method} request ==> $requestPath'); // Error log
     logger.d(
       'Error type: ${err.error} \n '
       'Error message: ${err.message}',
     ); //Debug log
-    handler.next(err); //Continue with the Error
+    handler.next(err); // Continue with the Error
   }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final requestPath = '${options.baseUrl}${options.path}';
-    logger.i('${options.method} request ==> $requestPath'); //Info log
-    handler.next(options); // continue with the Request
+    logger.i('${options.method} request ==> $requestPath'); // Info log
+    handler.next(options); // Continue with the Request
   }
 
   @override
@@ -34,6 +34,6 @@ class LoggerInterceptor extends Interceptor {
       'HEADERS: ${response.headers} \n'
       'Data: ${response.data}',
     ); // Debug log
-    handler.next(response); // continue with the Response
+    handler.next(response); // Continue with the Response
   }
 }

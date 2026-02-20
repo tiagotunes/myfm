@@ -1,14 +1,15 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:my_fm/common/helper/message/display_message.dart';
 import 'package:my_fm/common/helper/navigation/app_navigation.dart';
-import 'package:my_fm/core/configs/theme/app_colors.dart';
 import 'package:my_fm/data/auth/models/sign_in_request.dart';
 import 'package:my_fm/domain/auth/usecases/sign_in_uc.dart';
 import 'package:my_fm/presentation/auth/pages/sign_up.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_button.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_email_field.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_password_field.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_switch_text.dart';
 import 'package:my_fm/presentation/home/pages/home.dart';
 import 'package:my_fm/service_locator.dart';
-import 'package:reactive_button/reactive_button.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({super.key});
@@ -25,78 +26,35 @@ class SignInPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _signInText(),
+            const Text(
+              'Sign In',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 30),
-            _emailField(),
+            AuthEmailField(controller: _emailController),
             const SizedBox(height: 20),
-            _passwordField(),
+            AuthPasswordField(controller: _passwordController),
             const SizedBox(height: 60),
-            _signInButton(context),
+            AuthButton(
+              title: 'Sign In',
+              onPressed: () async => await sl<SignInUseCase>().call(
+                params: SignInRequest(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                ),
+              ),
+              onSuccess: () =>
+                  AppNavigation.pushAndRemoveUntil(context, const HomePage()),
+              onFailure: (error) => DisplayMessage.errorMessage(context, error),
+            ),
             const SizedBox(height: 20),
-            _signUpText(context),
+            AuthSwitchText(
+              question: 'Don\'t have an account? ',
+              actionText: 'Sign Up',
+              onTap: () => AppNavigation.push(context, SignUpPage()),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _signInText() {
-    return const Text(
-      'Sign In',
-      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _emailField() {
-    return TextField(
-      controller: _emailController,
-      decoration: const InputDecoration(hintText: 'Email'),
-    );
-  }
-
-  Widget _passwordField() {
-    return TextField(
-      controller: _passwordController,
-      decoration: const InputDecoration(hintText: 'Password'),
-    );
-  }
-
-  Widget _signInButton(BuildContext context) {
-    return ReactiveButton(
-      title: 'Sign In',
-      activeColor: AppColors.primary,
-      onPressed: () async => sl<SignInUseCase>().call(
-        params: SignInRequest(
-          email: _emailController.text,
-          password: _passwordController.text,
-        ),
-      ),
-      onSuccess: () {
-        AppNavigation.pushAndRemoveUntil(context, const HomePage());
-      },
-      onFailure: (error) {
-        DisplayMessage.errorMessage(context, error);
-      },
-    );
-  }
-
-  Widget _signUpText(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          const TextSpan(text: 'Don\'t have an account? '),
-          TextSpan(
-            text: 'Sign Up',
-            style: const TextStyle(
-              color: Color(0xFFAF78FF),
-              fontWeight: FontWeight.w500,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                AppNavigation.push(context, const SignUpPage());
-              },
-          ),
-        ],
       ),
     );
   }

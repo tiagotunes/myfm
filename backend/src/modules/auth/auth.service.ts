@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -26,11 +22,12 @@ export class AuthService {
       select: ['id', 'email', 'displayName', 'role', 'isActive'],
     });
 
-    if (!user)
+    if (!user) {
       throw new UnauthorizedException({
         code: ErrorCode.AUTH_INVALID_CREDENTIALS,
         message: ErrorCode.AUTH_INVALID_CREDENTIALS,
       });
+    }
 
     return user;
   }

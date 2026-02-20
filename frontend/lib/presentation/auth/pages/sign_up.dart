@@ -1,12 +1,16 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:my_fm/common/helper/navigation/app_navigation.dart';
-import 'package:my_fm/core/configs/theme/app_colors.dart';
 import 'package:my_fm/presentation/auth/pages/sign_in.dart';
-import 'package:reactive_button/reactive_button.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_button.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_email_field.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_password_field.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_switch_text.dart';
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
+  SignUpPage({super.key});
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,63 +21,29 @@ class SignUpPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _signUpText(),
+            const Text(
+              'Sign Up',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 30),
-            _emailField(),
+            AuthEmailField(controller: _emailController),
             const SizedBox(height: 20),
-            _passwordField(),
+            AuthPasswordField(controller: _passwordController),
             const SizedBox(height: 60),
-            _signUpButton(),
+            AuthButton(
+              title: 'Sign Up',
+              onPressed: () async {},
+              onSuccess: () {},
+              onFailure: (error) {},
+            ),
             const SizedBox(height: 20),
-            _signInText(context),
+            AuthSwitchText(
+              question: 'Already have an account? ',
+              actionText: 'Sign In',
+              onTap: () => AppNavigation.push(context, SignInPage()),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _signUpText() {
-    return const Text(
-      'Sign Up',
-      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _emailField() {
-    return const TextField(decoration: InputDecoration(hintText: 'Email'));
-  }
-
-  Widget _passwordField() {
-    return const TextField(decoration: InputDecoration(hintText: 'Password'));
-  }
-
-  Widget _signUpButton() {
-    return ReactiveButton(
-      title: 'Sign Up',
-      activeColor: AppColors.primary,
-      onPressed: () async {},
-      onSuccess: () {},
-      onFailure: (error) {},
-    );
-  }
-
-  Widget _signInText(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          const TextSpan(text: 'Already have an account? '),
-          TextSpan(
-            text: 'Sign In',
-            style: const TextStyle(
-              color: Color(0xFFAF78FF),
-              fontWeight: FontWeight.w500,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                AppNavigation.push(context, SignInPage());
-              },
-          ),
-        ],
       ),
     );
   }
