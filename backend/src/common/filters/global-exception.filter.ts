@@ -10,11 +10,6 @@ import { LoggingService } from '../../modules/logging/logging.service';
 import { ErrorCode } from '../errors/error-codes';
 import { HttpMethod } from '../../modules/logging/entities/error-log.entity';
 
-interface ApiError {
-  code: string;
-  message: string;
-}
-
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(private readonly loggingService: LoggingService) {}
@@ -25,30 +20,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let errors: ApiError[] = [
-      {
-        code: ErrorCode.INTERNAL_SERVER_ERROR,
-        message: ErrorCode.INTERNAL_SERVER_ERROR,
-      },
-    ];
+    let message = ErrorCode.INTERNAL_SERVER_ERROR;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const responseBody = exception.getResponse();
 
-      if (
-        typeof responseBody === 'object' &&
-        responseBody !== null &&
-        'message' in responseBody
-      ) {
-        const messages = Array.isArray((responseBody as any).message)
-          ? (responseBody as any).message
-          : [(responseBody as any).message];
+      if (typeof responseBody === 'object' && responseBody !== null) {
+        const body = responseBody as any;
 
-        errors = messages.map((code: string) => ({
-          code: (responseBody as any).code || code,
-          message: code,
-        }));
+        if (Array.isArray(body.message)) {
+          message = body.message[0];
+        } else if (typeof body.message === 'string') {
+          message = body.message;
+        }
       }
     }
 
@@ -59,7 +44,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         method: request.method as HttpMethod,
         path: request.url,
         status,
-        errorMessage: errors.map((e) => e.code).join(' | '),
+        errorMessage: message,
         stack: exception instanceof Error ? exception.stack : undefined,
         requestBody: request.path.includes('/auth/login')
           ? undefined
@@ -76,7 +61,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       status,
-      errors,
+      message,
     });
   }
 }

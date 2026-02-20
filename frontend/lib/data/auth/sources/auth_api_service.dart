@@ -19,8 +19,7 @@ class AuthApiServiceImpl implements AuthApiService {
       );
       return Right(response.data);
     } on DioException catch (e) {
-      print(e.response!.data);
-      return Left(e.response!.data['errors']);
+      return Left(e.response!.data['message']);
     }
   }
 }

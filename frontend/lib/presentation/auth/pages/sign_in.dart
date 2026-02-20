@@ -1,10 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:my_fm/common/helper/message/display_message.dart';
 import 'package:my_fm/common/helper/navigation/app_navigation.dart';
 import 'package:my_fm/core/configs/theme/app_colors.dart';
 import 'package:my_fm/data/auth/models/sign_in_request.dart';
 import 'package:my_fm/domain/auth/usecases/sign_in_uc.dart';
 import 'package:my_fm/presentation/auth/pages/sign_up.dart';
+import 'package:my_fm/presentation/home/pages/home.dart';
 import 'package:my_fm/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
@@ -29,7 +31,7 @@ class SignInPage extends StatelessWidget {
             const SizedBox(height: 20),
             _passwordField(),
             const SizedBox(height: 60),
-            _signInButton(),
+            _signInButton(context),
             const SizedBox(height: 20),
             _signUpText(context),
           ],
@@ -59,20 +61,22 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _signInButton() {
+  Widget _signInButton(BuildContext context) {
     return ReactiveButton(
       title: 'Sign In',
       activeColor: AppColors.primary,
-      onPressed: () async {
-        await sl<SignInUseCase>().call(
-          SignInRequest(
-            email: _emailController.text,
-            password: _passwordController.text,
-          ),
-        );
+      onPressed: () async => sl<SignInUseCase>().call(
+        params: SignInRequest(
+          email: _emailController.text,
+          password: _passwordController.text,
+        ),
+      ),
+      onSuccess: () {
+        AppNavigation.pushAndRemoveUntil(context, const HomePage());
       },
-      onSuccess: () {},
-      onFailure: (error) {},
+      onFailure: (error) {
+        DisplayMessage.errorMessage(context, error);
+      },
     );
   }
 

@@ -1,3 +1,4 @@
-abstract class UseCase<T, Params> {
-  Future<T> call(Params params);
+// ignore: avoid_types_as_parameter_names
+abstract class UseCase<Type, Params> {
+  Future<Type> call({Params params});
 }
