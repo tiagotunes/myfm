@@ -2,13 +2,15 @@ import 'package:get_it/get_it.dart';
 import 'package:my_fm/core/network/dio_cliente.dart';
 import 'package:my_fm/data/auth/repositories/auth_rep_impl.dart';
 import 'package:my_fm/data/auth/sources/auth_api_service.dart';
+import 'package:my_fm/data/auth/storage/token_storage.dart';
 import 'package:my_fm/domain/auth/repositories/auth_rep.dart';
-import 'package:my_fm/domain/auth/usecases/is_logged_in_uc.dart';
+import 'package:my_fm/domain/auth/usecases/auto_login_uc.dart';
 import 'package:my_fm/domain/auth/usecases/sign_in_uc.dart';
 
 final sl = GetIt.instance;
 
 void setupServiceLocator() {
+  sl.registerSingleton<TokenStorage>(TokenStorage());
   sl.registerSingleton<DioClient>(DioClient());
 
   // Services
@@ -19,5 +21,5 @@ void setupServiceLocator() {
 
   // Usecases
   sl.registerSingleton<SignInUseCase>(SignInUseCase());
-  sl.registerSingleton<IsLoggedInUseCase>(IsLoggedInUseCase());
+  sl.registerSingleton<AutoLoginUseCase>(AutoLoginUseCase());
 }

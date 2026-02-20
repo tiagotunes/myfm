@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:my_fm/data/auth/models/sign_in_request.dart';
 import 'package:my_fm/data/auth/sources/auth_api_service.dart';
+import 'package:my_fm/data/auth/storage/token_storage.dart';
 import 'package:my_fm/domain/auth/repositories/auth_rep.dart';
 import 'package:my_fm/service_locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,13 +29,30 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> isLoggedIn() async {
-    final sharedPrerences = await SharedPreferences.getInstance();
-    var token = sharedPrerences.getString('token');
-    if (token == null) {
-      return false;
-    } else {
-      return true;
-    }
+  Future<bool> autoLogin() async {
+    final refreshToken = await sl<TokenStorage>().getRefreshToken();
+    if (refreshToken == null) return false;
+
+    final result = await sl<AuthApiService>().refreshToken(refreshToken);
+
+    return result.fold(
+      (_) async {
+        await sl<TokenStorage>().clear();
+        return false;
+      },
+      (tokens) async {
+        await sl<TokenStorage>().saveTokens(
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+        );
+        return true;
+      },
+    );
+  }
+
+  @override
+  Future<String?> getAccessToken() {
+    // TODO: implement getAccessToken
+    throw UnimplementedError();
   }
 }
