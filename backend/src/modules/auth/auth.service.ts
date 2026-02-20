@@ -35,7 +35,7 @@ export class AuthService {
     return user;
   }
 
-  async login(email: string, password: string) {
+  async signIn(email: string, password: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
     });

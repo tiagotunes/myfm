@@ -46,7 +46,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         status,
         errorMessage: message,
         stack: exception instanceof Error ? exception.stack : undefined,
-        requestBody: request.path.includes('/auth/login')
+        requestBody: request.path.includes('/auth/signin')
           ? undefined
           : request.body,
         requestParams: {

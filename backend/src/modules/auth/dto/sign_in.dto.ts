@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ErrorCode } from 'src/common/errors/error-codes';
 
-export class LoginDto {
+export class SignInDto {
   @IsEmail({}, { message: ErrorCode.AUTH_INVALID_EMAIL })
   email: string;
 
