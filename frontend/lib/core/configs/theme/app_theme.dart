@@ -30,10 +30,14 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
+        disabledBackgroundColor: AppColors.secondaryBackground,
         elevation: 0,
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppColors.white
+    )
   );
 }

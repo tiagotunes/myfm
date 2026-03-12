@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_fm/common/bloc/auth/auth_cubit.dart';
+import 'package:my_fm/common/bloc/auth/auth_state.dart';
+import 'package:my_fm/common/widgets/message/display_message.dart';
 import 'package:my_fm/core/configs/theme/app_theme.dart';
-import 'package:my_fm/presentation/splash/bloc/splash_cubit.dart';
+import 'package:my_fm/presentation/auth/pages/sign_in.dart';
+import 'package:my_fm/presentation/home/pages/home.dart';
 import 'package:my_fm/presentation/splash/pages/splash.dart';
 import 'package:my_fm/service_locator.dart';
 
@@ -20,11 +24,29 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     );
+
     return BlocProvider(
-      create: (context) => SplashCubit()..appStarted(),
+      create: (_) => sl<AuthCubit>()..appStarted(),
       child: MaterialApp(
         theme: AppTheme.appDarkTheme,
-        home: const SplashPage(),
+        home: BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthErrorState) {
+              DisplayMessage.errorMessage(context, state.message);
+            }
+          },
+          child: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              if (state is AuthenticatedState) {
+                return const HomePage();
+              }
+              if (state is UnauthenticatedState) {
+                return SignInPage();
+              }
+              return const SplashPage();
+            },
+          ),
+        ),
       ),
     );
   }

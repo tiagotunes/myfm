@@ -16,15 +16,18 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<User | null> {
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
+  async getInfo(id: string): Promise<User | null> {
     return await this.usersRepository.findOne({
+      select: ['id', 'email', 'name', 'bio', 'countryCode', 'language'],
       where: { id },
     });
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOne({
-      where: { email },
-    });
+    return await this.usersRepository.findOne({ where: { email } });
   }
 
   async updateLastLogin(userId: string) {

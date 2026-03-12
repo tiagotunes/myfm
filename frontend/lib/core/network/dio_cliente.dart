@@ -1,19 +1,25 @@
 import 'package:dio/dio.dart';
 import 'package:my_fm/core/configs/constants/api_url.dart';
-import 'package:my_fm/core/network/interceptors.dart';
+import 'package:my_fm/core/network/interceptors/auth_interceptor.dart';
+import 'package:my_fm/core/network/interceptors/logger_interceptor.dart';
 
 class DioClient {
   late final Dio _dio;
-  DioClient()
-    : _dio = Dio(
-        BaseOptions(
-          baseUrl: ApiUrl.baseUrl,
-          headers: {'Content-Type': 'application/json; charset=UTF-8'},
-          responseType: ResponseType.json,
-          sendTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
-        ),
-      )..interceptors.addAll([LoggerInterceptor()]);
+  DioClient() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: ApiUrl.baseUrl,
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        responseType: ResponseType.json,
+        sendTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
+    _dio.interceptors.addAll([
+      LoggerInterceptor(),
+      AuthInterceptor(_dio),
+    ]);
+  }
 
   // GET METHOD
   Future<Response> get(

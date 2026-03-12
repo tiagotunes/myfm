@@ -38,7 +38,6 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
 export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
   handleRequest(err: any, user: any, info: any) {
     if (err || !user) {
-      console.log(err);
       throw (
         err ||
         new UnauthorizedException({ message: ErrorCode.AUTH_INVALID_TOKEN })

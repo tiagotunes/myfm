@@ -31,9 +31,7 @@ export class AuthService {
     user: User,
   ): Promise<{ access_token: string; refresh_token: string }> {
     const accessPayload = { sub: user.id };
-
-    const loginAt = user.lastLoginAt?.getTime() ?? Date.now();
-    const refreshPayload = { sub: user.id, lastLoginAt: loginAt };
+    const refreshPayload = { sub: user.id };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(accessPayload, {
@@ -62,19 +60,21 @@ export class AuthService {
    * @throws {UnauthorizedException} If the session has expired or the account is inactive.
    ----------------------------------------------------------------------------------------------------- **/
   async refreshToken(user: any): Promise<{ access_token: string }> {
-    const sevenDays = 7 * 24 * 60 * 60 * 1000;
-
-    if (!user.lastLoginAt || Date.now() - user.lastLoginAt > sevenDays) {
-      throw new UnauthorizedException({
-        message: ErrorCode.AUTH_SESSION_EXPIRED,
-      });
-    }
-
     const dbUser = await this.usersService.findById(user.id);
 
     if (!dbUser || !dbUser.isActive) {
       throw new UnauthorizedException({
         message: ErrorCode.AUTH_ACCOUNT_DISABLED,
+      });
+    }
+
+    const limit = 6 * 24 * 60 * 60 * 1000; // 6d
+    if (
+      !dbUser.lastLoginAt ||
+      Date.now() - dbUser.lastLoginAt.getTime() >= limit
+    ) {
+      throw new UnauthorizedException({
+        message: ErrorCode.AUTH_SESSION_EXPIRED,
       });
     }
 
@@ -144,7 +144,7 @@ export class AuthService {
 
     if (user) {
       throw new ConflictException({
-        message: ErrorCode.AUTH_USER_ALREADY_EXISTS,
+        message: ErrorCode.SIGN_USER_ALREADY_EXISTS,
       });
     }
 

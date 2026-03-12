@@ -6,6 +6,6 @@ export class SignInDto {
   @IsNotEmpty({ message: ErrorCode.SIGN_EMAIL_EMPTY })
   email: string;
 
-  @IsNotEmpty({ message: ErrorCode.SIGN_AUTH_PASSWORD_EMPTY })
+  @IsNotEmpty({ message: ErrorCode.SIGN_PASSWORD_EMPTY })
   password: string;
 }

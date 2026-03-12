@@ -1,9 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:my_fm/data/auth/models/sign_in_request.dart';
+import 'package:my_fm/data/auth/models/sign_up_request.dart';
 
 abstract class AuthRepository {
-  Future<Either> signUp();
+  Future<Either> getMe();
+  Future<Either> refreshToken();
   Future<Either> signIn(SignInRequest params);
-  Future<bool> autoLogin();
-  Future<String?> getAccessToken();
+  Future<Either> signOut();
+  Future<Either> signUp(SignUpRequest params);
 }

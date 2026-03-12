@@ -13,14 +13,18 @@ import { SignInDto } from './dtos/sing-in.dto';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { RefreshTokenGuard } from './auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('me')
   getProfile(@Request() req: any) {
-    return req.user;
+    return this.usersService.getInfo(req.user.id);
   }
 
   @Public()
