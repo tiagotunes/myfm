@@ -1,11 +1,16 @@
 ---
-name: "[Feature] Short description"
-about: What is this feature about? Keep it clear and concise.
+name: Feature
+about: An idea for this project
 title: ''
 labels: feature
 assignees: ''
 
 ---
+
+**Description**
+- What is this feature about? Keep it clear and concise.
+
+<hr/>
 
 **Requirements**
 - [ ] Requirement 1
