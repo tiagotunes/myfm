@@ -17,10 +17,6 @@ concurrency:
   group: flutter-ci-${{ github.ref }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: frontend
-
 jobs:
   analyze:
     name: Analyze
@@ -33,7 +29,9 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+        working-directory: frontend
       - run: flutter analyze
+        working-directory: frontend
 
   test:
     name: Test
@@ -47,7 +45,9 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+        working-directory: frontend
       - run: flutter test
+        working-directory: frontend
 
   build:
     name: Build APK
@@ -61,7 +61,9 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+        working-directory: frontend
       - run: flutter build apk --debug
+        working-directory: frontend
 
   finish:
     name: Flutter CI
