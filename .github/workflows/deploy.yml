@@ -2,7 +2,7 @@ name: Railway Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   workflow_dispatch:
 
 jobs:
@@ -26,10 +26,19 @@ jobs:
       - run: npm install
       - run: npm test
 
-      - name: Install Railway
-        run: npm i -g @railway/cli
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
-      - name: Deploy
-        run: railway up --service MyFM
+      - name: Deploy to Railway (Production)
+        if: github.ref == 'refs/heads/main'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service backend --environment production --detach
+
+      - name: Deploy to Railway (Development)
+        if: github.ref == 'refs/heads/develop'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service backend --environment development --detach
