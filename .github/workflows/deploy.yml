@@ -41,6 +41,3 @@ jobs:
 
       - name: Deploy
         run: railway up --service backend --environment production --detach
-
-      - name: Run migrations
-        run: railway run --service backend --environment production "npm run migration:run:prod"
