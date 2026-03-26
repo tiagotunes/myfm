@@ -10,6 +10,10 @@ export const dataSourceOptions: DataSourceOptions = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 
+  ssl: {
+    rejectUnauthorized: false,
+  },
+
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/database/migrations/*.js'],
   migrationsTableName: 'migrations',
