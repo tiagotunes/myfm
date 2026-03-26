@@ -39,11 +39,8 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Link Railway project
-        run: railway link --project MyFM --environment production --service backend
-
       - name: Deploy
-        run: railway up --detach
+        run: railway up --service backend --environment production --detach
 
       - name: Run migrations
-        run: railway run npm run migration:run
+        run: railway run npm run migration:run --service backend --environment production
