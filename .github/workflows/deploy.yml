@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     environment: PRD
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
     defaults:
       run:
@@ -38,9 +40,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Link Railway project
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway link --service backend --environment production
+        run: railway link --project MyFM --environment production --service backend
 
       - name: Deploy
         run: railway up --detach
