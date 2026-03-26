@@ -3,10 +3,13 @@ name: Railway Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - "backend/**"
   workflow_dispatch:
 
 jobs:
   deploy-prod:
+    name: Production
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
@@ -28,11 +31,20 @@ jobs:
       - run: npm install
       - run: npm test
 
+      - name: Build project
+        run: npm run build
+
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy to Railway (Production)
+      - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           railway up --service backend --environment production --detach
+
+      - name: Run database migrations
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway run npm run migration:run --service backend --environment production
