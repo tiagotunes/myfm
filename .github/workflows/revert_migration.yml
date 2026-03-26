@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     environment: PRD
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
     defaults:
       run:
@@ -30,7 +32,4 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Revert last migration
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway run npm run migration:revert --service backend --environment production
+        run: railway run --service backend --environment production "npm run migration:revert:prod"

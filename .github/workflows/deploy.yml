@@ -40,7 +40,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy
-        run: railway up --environment production --service backend --detach
+        run: railway up --service backend --environment production --detach
 
       - name: Run migrations
-        run: railway run --environment production --service backend npm run migration:run
+        run: railway run --service backend --environment production "npm run migration:run:prod"
