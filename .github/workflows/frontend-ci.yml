@@ -3,17 +3,31 @@ name: Frontend CI
 on:
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'frontend/**'
   workflow_dispatch:
 
-concurrency:
-  group: frontend-ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
+  detect:
+    name: Detect Frontend Changes
+    runs-on: ubuntu-latest
+
+    outputs:
+      frontend: ${{ steps.changes.outputs.frontend }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for frontend changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+
   ci:
     name: Frontend CI
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -24,7 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.x'
