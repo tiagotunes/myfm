@@ -1,84 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_fm/common/bloc/button/button_state.dart';
 import 'package:my_fm/common/bloc/button/button_cubit.dart';
-import 'package:my_fm/common/widgets/button/bloc_button.dart';
-import 'package:my_fm/common/widgets/message/display_message.dart';
-import 'package:my_fm/data/auth/models/sign_up_request.dart';
-import 'package:my_fm/domain/auth/usecases/sign_up_uc.dart';
-import 'package:my_fm/presentation/auth/pages/sign_in.dart';
-import 'package:my_fm/presentation/auth/widgets/auth_email_field.dart';
-import 'package:my_fm/presentation/auth/widgets/auth_name_field.dart';
-import 'package:my_fm/presentation/auth/widgets/auth_password_field.dart';
-import 'package:my_fm/presentation/auth/widgets/auth_switch_text.dart';
-import 'package:my_fm/service_locator.dart';
+import 'package:my_fm/core/configs/theme/app_sizes.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_footer.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_header.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_sign_up_actions.dart';
+import 'package:my_fm/presentation/auth/widgets/auth_sign_up_form.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: BlocProvider(
         create: (context) => ButtonCubit(),
-        child: BlocListener<ButtonCubit, ButtonState>(
-          listener: (context, state) {
-            if (state is ButtonSuccessState) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => SignInPage()),
-              );
-              DisplayMessage.infoMessage(context, 'VERIFY_EMAIL');
-            }
-            if (state is ButtonFailureState) {
-              DisplayMessage.errorMessage(context, state.errorMessage);
-            }
-          },
-          child: SafeArea(
-            minimum: const EdgeInsets.only(top: 100, right: 16, left: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 30),
-                AuthEmailField(controller: _emailController),
-                const SizedBox(height: 20),
-                AuthPasswordField(controller: _passwordController),
-                const SizedBox(height: 20),
-                AuthNameField(controller: _nameController),
-                const SizedBox(height: 60),
-                BlocButton(
-                  title: 'Sign Up',
-                  useCase: sl<SignUpUseCase>(),
-                  params: () => SignUpRequest(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    name: _nameController.text,
+        child: SafeArea(
+          minimum: AppSizes.safeAreaConstraints,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: AppSizes.scsvConstraints,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const AuthHeader(
+                        headline: 'create account',
+                        title: 'Start managing your team beyond the game.',
+                      ),
+
+                      AppSizes.spaceBtwHeaderForm,
+
+                      AuthSignUpForm(
+                        emailController: _emailController,
+                        passwordController: _passwordController,
+                        confirmPasswordController: _confirmPasswordController,
+                        nameController: _nameController,
+                      ),
+
+                      AppSizes.spaceBtwFormActions,
+
+                      AuthSignUpActions(
+                        controllers: [
+                          _emailController,
+                          _passwordController,
+                          _confirmPasswordController,
+                          _nameController,
+                        ],
+                      ),
+                    ],
                   ),
-                  onSuccess: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => SignInPage()),
-                    );
-                    DisplayMessage.infoMessage(context, "VERIFY_EMAIL");
-                  },
                 ),
-                const SizedBox(height: 20),
-                AuthSwitchText(
-                  question: 'Already have an account? ',
-                  actionText: 'Sign In',
-                  onTap: () => Navigator.pop(context),
-                ),
-              ],
-            ),
+              ),
+
+              const AuthFooter(
+                text:
+                    'By continuing, you agree to our Terms and Privacy Policy.',
+              ),
+            ],
           ),
         ),
       ),

@@ -14,13 +14,11 @@ class BasicButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: isLoading ? const CircularProgressIndicator() : Text(title),
-      ),
+    return ElevatedButton(
+      child: isLoading
+          ? const CircularProgressIndicator()
+          : Text(title.toUpperCase()),
+      onPressed: onPressed,
     );
   }
 }
