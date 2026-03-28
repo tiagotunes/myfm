@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const primary             = twilight;
   static const background          = midnight;
-  static const secondaryBackground = Color(0xFF35383F);
 
   static const white               = Color(0xFFFFFFFF);
   static const air                 = Color(0xFFE6E6FA);

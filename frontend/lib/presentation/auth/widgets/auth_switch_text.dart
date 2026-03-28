@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:my_fm/core/configs/theme/app_colors.dart';
 
 class AuthSwitchText extends StatelessWidget {
   final String question;
@@ -18,12 +19,17 @@ class AuthSwitchText extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          TextSpan(text: question),
+          TextSpan(
+            text: question,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: AppColors.cloud.withValues(alpha: 0.7),
+            ),
+          ),
           TextSpan(
             text: actionText,
-            style: const TextStyle(
-              color: Color(0xFFAF78FF),
-              fontWeight: FontWeight.w500,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AppColors.cloud,
             ),
             recognizer: TapGestureRecognizer()..onTap = onTap,
           ),

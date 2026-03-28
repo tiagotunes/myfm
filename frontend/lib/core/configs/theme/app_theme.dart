@@ -1,43 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:my_fm/core/configs/theme/app_colors.dart';
+import 'package:my_fm/core/configs/theme/app_sizes.dart';
+import 'package:my_fm/core/configs/theme/app_text_theme.dart';
 
 class AppTheme {
   static final appDarkTheme = ThemeData(
+    fontFamily: AppTextTheme.defaultFont,
+    textTheme: AppTextTheme.textTheme,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
     brightness: Brightness.dark,
+
     snackBarTheme: const SnackBarThemeData(
-      backgroundColor: AppColors.background,
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
       contentTextStyle: TextStyle(color: Colors.white),
     ),
-    inputDecorationTheme: const InputDecorationTheme(
+
+    inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.secondaryBackground,
-      hintStyle: TextStyle(
-        color: Color(0xFFA7A7A7),
-        fontWeight: FontWeight.w400,
-      ),
-      contentPadding: EdgeInsets.all(16),
+      fillColor: AppColors.white.withValues(alpha: 0.05),
+      contentPadding: AppSizes.inputPadding,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        borderSide: BorderSide.none,
+        borderRadius: AppSizes.inputBorderRadius,
+        borderSide: BorderSide(
+          color: AppColors.white.withValues(alpha: 0.1),
+          width: AppSizes.inputBorderWidth,
+        ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        borderSide: BorderSide.none,
+        borderRadius: AppSizes.inputBorderRadius,
+        borderSide: BorderSide(
+          color: AppColors.white.withValues(alpha: 0.1),
+          width: AppSizes.inputBorderWidth,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: AppSizes.inputBorderRadius,
+        borderSide: BorderSide(
+          color: AppColors.white.withValues(alpha: 0.2),
+          width: AppSizes.inputBorderWidthFocused,
+        ),
       ),
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
-        disabledBackgroundColor: AppColors.secondaryBackground,
+        disabledBackgroundColor: AppColors.primary,
+        fixedSize: AppSizes.buttonSize,
         elevation: 0,
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        foregroundColor: AppColors.white,
+        textStyle: AppTextTheme.textTheme.labelMedium,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppSizes.buttonBorderRadius,
+        ),
       ),
     ),
-    progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: AppColors.white
-    )
+
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      circularTrackColor: AppColors.air.withValues(alpha: 0.2),
+      color: AppColors.air,
+      strokeWidth: AppSizes.progressIndStrokeWidth,
+      constraints: AppSizes.progressIndConstraints,
+    ),
   );
 }
