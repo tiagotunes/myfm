@@ -3,13 +3,31 @@ name: Backend CI
 on:
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'backend/**'
   workflow_dispatch:
 
 jobs:
+  detect:
+    name: Detect Backend Changes
+    runs-on: ubuntu-latest
+
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for backend changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+
   ci:
     name: Backend CI
+    needs: detect
+    if: needs.detect.outputs.backend == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -19,13 +37,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
-      - run: npm run build
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
