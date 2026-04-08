@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:my_fm/data/auth/models/sign_in_request.dart';
+import 'package:my_fm/data/auth/models/sign_up_params.dart';
 import 'package:my_fm/data/auth/models/sign_up_request.dart';
 import 'package:my_fm/data/auth/models/user_model.dart';
 import 'package:my_fm/data/auth/sources/auth_api_service.dart';
@@ -73,8 +74,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either> signUp(SignUpRequest params) async {
-    var data = await sl<AuthApiService>().signUp(params);
+  Future<Either> signUp(SignUpParams params) async {
+    if (params.password.isNotEmpty) {
+      if (params.password != params.confirmPassword) {
+        return const Left('PASSWORDS_NOT_MATCH');
+      }
+    }
+
+    var data = await sl<AuthApiService>().signUp(
+      SignUpRequest(
+        email: params.email,
+        password: params.password,
+        name: params.name,
+      ),
+    );
     return data.fold(
       (error) {
         return Left(error);
