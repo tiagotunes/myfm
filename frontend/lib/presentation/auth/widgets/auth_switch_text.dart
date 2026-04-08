@@ -24,6 +24,7 @@ class AuthSwitchText extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: AppColors.cloud.withValues(alpha: 0.7),
             ),
+            recognizer: TapGestureRecognizer()..onTap = onTap,
           ),
           TextSpan(
             text: actionText,
