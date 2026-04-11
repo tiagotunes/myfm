@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/entities/user.entity';
-import { ErrorCode } from 'src/common/constants/error-codes';
+import { UsersService } from '@/users/users.service';
+import { User } from '@/users/entities/user.entity';
+import { ErrorCode } from '@/common/constants/error-codes';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from './dtos/sing-in.dto';
-import { SignUpDto } from './dtos/sign-up.dto';
+import { SignInDto } from '@/auth/dtos/sing-in.dto';
+import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 
 @Injectable()
 export class AuthService {

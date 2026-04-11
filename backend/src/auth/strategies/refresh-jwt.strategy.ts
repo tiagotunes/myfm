@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as bcrypt from 'bcrypt';
-import { ErrorCode } from 'src/common/constants/error-codes';
-import { UsersService } from 'src/users/users.service';
+import { ErrorCode } from '@/common/constants/error-codes';
+import { UsersService } from '@/users/users.service';
 
 @Injectable()
 export class RefreshTokenJwtStrategy extends PassportStrategy(

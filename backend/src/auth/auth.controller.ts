@@ -8,12 +8,12 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { SignInDto } from './dtos/sing-in.dto';
-import { SignUpDto } from './dtos/sign-up.dto';
-import { Public } from 'src/common/decorators/public.decorator';
-import { RefreshTokenGuard } from './auth.guard';
-import { UsersService } from 'src/users/users.service';
+import { AuthService } from '@/auth/auth.service';
+import { SignInDto } from '@/auth/dtos/sing-in.dto';
+import { SignUpDto } from '@/auth/dtos/sign-up.dto';
+import { Public } from '@/common/decorators/public.decorator';
+import { RefreshTokenGuard } from '@/auth/auth.guard';
+import { UsersService } from '@/users/users.service';
 
 @Controller('auth')
 export class AuthController {
