@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
-import { ErrorCode } from 'src/common/constants/error-codes';
+import { ErrorCode } from '@/common/constants/error-codes';
 
 export class SignUpDto {
   @IsEmail({}, { message: ErrorCode.SIGN_EMAIL_INVALID })
