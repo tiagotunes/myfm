@@ -6,7 +6,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "src/*": ["src/*"]
+      "@/*": ["src/*"]
     },
 
     "rootDir": "./src",
@@ -27,5 +27,6 @@
     "incremental": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
