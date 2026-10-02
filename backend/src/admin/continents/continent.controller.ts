@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
-import { UserRole } from '@/users/entities/user.entity';
+import { UserRole } from '@/users/user.entity';
 import { ContinentService } from '@/admin/continents/continent.service';
 
 @Controller('continents')

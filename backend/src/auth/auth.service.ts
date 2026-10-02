@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '@/users/users.service';
-import { User } from '@/users/entities/user.entity';
+import { UserService } from '@/users/user.service';
+import { User } from '@/users/user.entity';
 import { ErrorCode } from '@/common/constants/error-codes';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from '@/auth/dtos/sing-in.dto';
@@ -16,7 +16,7 @@ import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private usersService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}

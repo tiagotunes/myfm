@@ -12,7 +12,7 @@ import {
 import { FederationService } from '@/admin/federations/federation.service';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
-import { UserRole } from '@/users/entities/user.entity';
+import { UserRole } from '@/users/user.entity';
 import { CreateFederationDto } from '@/admin/federations/dtos/create-federation.dto';
 import { UpdateFederationDto } from '@/admin/federations/dtos/update-federation.dto';
 

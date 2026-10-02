@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@/auth/auth.module';
-import { UsersModule } from '@/users/users.module';
+import { UserModule } from '@/users/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@/auth/guards/token.guard';
 import { AccessTokenJwtStrategy } from '@/auth/strategies/access-jwt.strategy';
@@ -15,7 +15,7 @@ import { NationModule } from './admin/nations/nation.module';
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     AuthModule,
-    UsersModule,
+    UserModule,
     FederationModule,
     ContinentModule,
     NationModule,

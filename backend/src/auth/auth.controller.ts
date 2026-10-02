@@ -13,13 +13,13 @@ import { SignInDto } from '@/auth/dtos/sing-in.dto';
 import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 import { Public } from '@/common/decorators/public.decorator';
 import { RefreshTokenGuard } from '@/auth/guards/token.guard';
-import { UsersService } from '@/users/users.service';
+import { UserService } from '@/users/user.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
   ) {}
 
   @Get('me')

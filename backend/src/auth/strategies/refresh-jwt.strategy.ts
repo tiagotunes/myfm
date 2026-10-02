@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as bcrypt from 'bcrypt';
 import { ErrorCode } from '@/common/constants/error-codes';
-import { UsersService } from '@/users/users.service';
+import { UserService } from '@/users/user.service';
 
 @Injectable()
 export class RefreshTokenJwtStrategy extends PassportStrategy(
@@ -12,7 +12,7 @@ export class RefreshTokenJwtStrategy extends PassportStrategy(
   'jwt-refresh',
 ) {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly configService: ConfigService,
   ) {
     super({

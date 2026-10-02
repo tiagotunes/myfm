@@ -3,12 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ErrorCode } from '@/common/constants/error-codes';
-import { UsersService } from '@/users/users.service';
+import { UserService } from '@/users/user.service';
 
 @Injectable()
 export class AccessTokenJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly configService: ConfigService,
   ) {
     super({
