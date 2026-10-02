@@ -11,12 +11,17 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       Either result = await sl<RefreshTokenUseCase>().call();
 
-      result.fold((error) {
-        if (error != null) {
-          emit(AuthErrorState(error.toString()));
-        }
-        emit(UnauthenticatedState());
-      }, (_) => emit(AuthenticatedState()));
+      result.fold(
+        (error) {
+          if (error != null) {
+            emit(AuthErrorState(error.toString()));
+          }
+          emit(UnauthenticatedState());
+        },
+        (data) {
+          emit(AuthenticatedState(data['role'] == 'admin'));
+        },
+      );
     } catch (ex) {
       emit(AuthErrorState(ex.toString()));
     }

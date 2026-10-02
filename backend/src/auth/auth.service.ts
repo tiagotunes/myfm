@@ -29,9 +29,9 @@ export class AuthService {
    ----------------------------------------------------------------------------------------------------- **/
   async generateTokens(
     user: User,
-  ): Promise<{ access_token: string; refresh_token: string }> {
-    const accessPayload = { sub: user.id };
-    const refreshPayload = { sub: user.id };
+  ): Promise<{ access_token: string; refresh_token: string; role: string }> {
+    const accessPayload = { sub: user.id, role: user.role };
+    const refreshPayload = { sub: user.id, role: user.role };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(accessPayload, {
@@ -50,6 +50,7 @@ export class AuthService {
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
+      role: user.role,
     };
   }
 
@@ -83,20 +84,17 @@ export class AuthService {
 
   /** -----------------------------------------------------------------------------------------------------
    * Authenticates a user with email and password.
-   * @param {SignInDto} signInDto - User credentials.
+   * @param {SignInDto} body - User credentials.
    * @returns {Promise<{access_token: string, refresh_token: string}>} The generated access and refresh tokens.
    * @throws {UnauthorizedException} If credentials are invalid, the account is inactive, or the email is unverified.
    ----------------------------------------------------------------------------------------------------- **/
   async signIn(
-    signInDto: SignInDto,
+    body: SignInDto,
   ): Promise<{ access_token: string; refresh_token: string }> {
-    const user = await this.usersService.findByEmail(signInDto.email);
+    const user = await this.usersService.findByEmail(body.email);
 
     const passwordHash = user?.password ?? '$2b$10$invalidhashstring';
-    const passwordValid = await bcrypt.compare(
-      signInDto.password,
-      passwordHash,
-    );
+    const passwordValid = await bcrypt.compare(body.password, passwordHash);
 
     if (!user || !passwordValid) {
       throw new UnauthorizedException({

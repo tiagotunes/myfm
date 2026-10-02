@@ -21,8 +21,16 @@ export class UsersService {
 
   async getInfo(id: string): Promise<User | null> {
     return await this.usersRepository.findOne({
-      select: ['id', 'email', 'name', 'bio', 'countryCode', 'language'],
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        bio: true,
+        nation: { id: true, demonym: true, cca2: true },
+        language: true,
+      },
       where: { id },
+      relations: ['nation'],
     });
   }
 
