@@ -12,7 +12,7 @@ import { AuthService } from '@/auth/auth.service';
 import { SignInDto } from '@/auth/dtos/sing-in.dto';
 import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 import { Public } from '@/common/decorators/public.decorator';
-import { RefreshTokenGuard } from '@/auth/auth.guard';
+import { RefreshTokenGuard } from '@/auth/guards/token.guard';
 import { UsersService } from '@/users/users.service';
 
 @Controller('auth')

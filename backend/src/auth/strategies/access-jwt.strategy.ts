@@ -33,6 +33,6 @@ export class AccessTokenJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       });
     }
 
-    return { id: payload.sub };
+    return { id: payload.sub, role: payload.role };
   }
 }

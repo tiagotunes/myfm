@@ -14,6 +14,15 @@ class AppTextTheme {
       color: AppColors.white,
     ),
 
+    // Headline L
+    headlineMedium: TextStyle(
+      fontFamily: 'Roboto Condensed',
+      fontWeight: FontWeight.w700,
+      fontSize: 56,
+      height: 1.036,
+      color: AppColors.white,
+    ),
+
     // Subhead L
     titleLarge: TextStyle(
       fontFamily: 'Roboto',
@@ -23,6 +32,23 @@ class AppTextTheme {
       color: AppColors.cloud,
     ),
 
+    // Subhead M
+    titleMedium: TextStyle(
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w700,
+      fontSize: 24,
+      height: 1.083,
+      color: AppColors.white,
+    ),
+
+    // Body L
+    bodyLarge: TextStyle(
+      fontFamily: 'Roboto',
+      fontWeight: FontWeight.w400,
+      fontSize: 20,
+      height: 1.1,
+      color: AppColors.white,
+    ),
     // Body M
     bodyMedium: TextStyle(
       fontFamily: 'Roboto',

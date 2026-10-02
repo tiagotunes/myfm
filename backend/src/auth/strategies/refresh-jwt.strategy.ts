@@ -44,6 +44,6 @@ export class RefreshTokenJwtStrategy extends PassportStrategy(
       });
     }
 
-    return { id: user.id };
+    return { id: user.id, role: user.role };
   }
 }

@@ -95,7 +95,6 @@ ${_prettyJson(sanitizedBody)}
 ║ RESPONSE
 ╠══════════════════════════════════════════════════════════════
 ║ Status Code: ${response.statusCode}
-║ Method: ${response.requestOptions.method}
 ║ URL: ${response.requestOptions.baseUrl}${response.requestOptions.path}
 ║ Duration: ${duration?.inMilliseconds ?? '-'} ms
 ║ Data:

@@ -6,6 +6,7 @@ import 'package:my_fm/common/bloc/auth/auth_state.dart';
 import 'package:my_fm/common/widgets/message/display_message.dart';
 import 'package:my_fm/core/configs/theme/app_theme.dart';
 import 'package:my_fm/presentation/auth/pages/sign_in.dart';
+import 'package:my_fm/presentation/dashboard/pages/dashboard.dart';
 import 'package:my_fm/presentation/home/pages/home.dart';
 import 'package:my_fm/presentation/splash/pages/splash.dart';
 import 'package:my_fm/service_locator.dart';
@@ -38,7 +39,11 @@ class MyApp extends StatelessWidget {
           child: BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state is AuthenticatedState) {
-                return const HomePage();
+                if (state.isAdmin) {
+                  return const DashboardPage();
+                } else {
+                  return const HomePage();
+                }
               }
               if (state is UnauthenticatedState) {
                 return SignInPage();
