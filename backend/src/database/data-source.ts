@@ -1,6 +1,5 @@
 import 'dotenv/config';
-import { DataSource } from 'typeorm';
-import { DataSourceOptions } from 'typeorm/browser';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'mysql',
@@ -14,8 +13,8 @@ export const dataSourceOptions: DataSourceOptions = {
     rejectUnauthorized: false,
   },
 
-  entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/database/migrations/*.js'],
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations',
 
   invalidWhereValuesBehavior: {

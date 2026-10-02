@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Nation } from '@/admin/nations/nation.entity';
 
 export enum UserRole {
   USER = 'user',
@@ -39,8 +42,9 @@ export class User {
   @Column({ nullable: true })
   bio?: string;
 
-  @Column({ name: 'country_code', length: 2, nullable: true })
-  countryCode?: string;
+  @ManyToOne(() => Nation)
+  @JoinColumn({ name: 'nation_id' })
+  nation?: Nation;
 
   /*--------------------------------------------------
   | PREFERENCES                                      |
@@ -67,7 +71,7 @@ export class User {
   @Column({ name: 'email_verified', default: false })
   emailVerified: boolean;
 
-  @Column({ name: 'is_active', default: false })
+  @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
   @Column({ name: 'last_login_at', nullable: true })
