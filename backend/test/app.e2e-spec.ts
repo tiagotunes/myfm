@@ -1,16 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { HealthController } from './../src/health/health.controller';
 import { describe, beforeAll, afterAll, it } from '@jest/globals';
 
 describe('Health endpoint (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+    const moduleFixture = await Test.createTestingModule({
+      controllers: [HealthController],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -18,7 +18,7 @@ describe('Health endpoint (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    await app?.close();
   });
 
   it('GET /health returns 200 and status ok without authentication', async () => {
