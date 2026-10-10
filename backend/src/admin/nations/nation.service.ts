@@ -36,7 +36,7 @@ export class NationService {
     return nations;
   }
 
-  async getCount(): Promise<Number | null> {
+  async getCount(): Promise<number | null> {
     const nNations = await this.nationRepository.count();
     return nNations;
   }

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import {
   ConflictException,
   Injectable,
@@ -5,28 +6,21 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/users/user.service';
 import { User } from '@/users/user.entity';
 import { ErrorCode } from '@/common/constants/error-codes';
-import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from '@/auth/dtos/sing-in.dto';
 import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  /** -----------------------------------------------------------------------------------------------------
-   * Generates new JWT access and refresh tokens for the user.
-   * Saves a hashed version of the refresh token in the database.
-   * @param {User} user - The user for whom tokens are generated.
-   * @returns {Promise<{access_token: string, refresh_token: string}>} The generated access and refresh tokens.
-   ----------------------------------------------------------------------------------------------------- **/
   async generateTokens(
     user: User,
   ): Promise<{ access_token: string; refresh_token: string; role: string }> {
@@ -45,6 +39,7 @@ export class AuthService {
     ]);
 
     const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+
     await this.usersService.updateRefreshToken(user.id, refreshTokenHash);
 
     return {
@@ -54,44 +49,24 @@ export class AuthService {
     };
   }
 
-  /** -----------------------------------------------------------------------------------------------------
-   * Refreshes the user's access token using their last login timestamp.
-   * @param {any} user - The user requesting a token refresh.
-   * @returns {Promise<{access_token: string}>} The newly generated access token.
-   * @throws {UnauthorizedException} If the session has expired or the account is inactive.
-   ----------------------------------------------------------------------------------------------------- **/
-  async refreshToken(user: any): Promise<{ access_token: string }> {
+  async refreshToken(user: {
+    id: string;
+  }): Promise<{ access_token: string; refresh_token: string; role: string }> {
     const dbUser = await this.usersService.findById(user.id);
-
     if (!dbUser || !dbUser.isActive) {
       throw new UnauthorizedException({
         message: ErrorCode.AUTH_ACCOUNT_DISABLED,
       });
     }
-
-    const limit = 6 * 24 * 60 * 60 * 1000; // 6d
-    if (
-      !dbUser.lastLoginAt ||
-      Date.now() - dbUser.lastLoginAt.getTime() >= limit
-    ) {
-      throw new UnauthorizedException({
-        message: ErrorCode.AUTH_SESSION_EXPIRED,
-      });
-    }
-
     return this.generateTokens(dbUser);
   }
 
-  /** -----------------------------------------------------------------------------------------------------
-   * Authenticates a user with email and password.
-   * @param {SignInDto} body - User credentials.
-   * @returns {Promise<{access_token: string, refresh_token: string}>} The generated access and refresh tokens.
-   * @throws {UnauthorizedException} If credentials are invalid, the account is inactive, or the email is unverified.
-   ----------------------------------------------------------------------------------------------------- **/
   async signIn(
     body: SignInDto,
   ): Promise<{ access_token: string; refresh_token: string }> {
-    const user = await this.usersService.findByEmail(body.email);
+    const user = await this.usersService.findByEmailForAuthentication(
+      body.email,
+    );
 
     const passwordHash = user?.password ?? '$2b$10$invalidhashstring';
     const passwordValid = await bcrypt.compare(body.password, passwordHash);
@@ -108,36 +83,21 @@ export class AuthService {
       });
     }
 
-    if (!user.emailVerified) {
-      throw new UnauthorizedException({
-        message: ErrorCode.AUTH_EMAIL_NOT_VERIFIED,
-      });
-    }
-
     await this.usersService.updateLastLogin(user.id);
     user.lastLoginAt = new Date();
 
-    return await this.generateTokens(user);
+    return this.generateTokens(user);
   }
 
-  /** -----------------------------------------------------------------------------------------------------
-   * Signs out the user by removing their stored refresh token.
-   * @param {any} user - The user signing out.
-   ----------------------------------------------------------------------------------------------------- **/
-  async signOut(user: any) {
+  async signOut(user: { id: string }): Promise<void> {
     await this.usersService.updateRefreshToken(user.id, null);
   }
 
-  /** -----------------------------------------------------------------------------------------------------
-   * Registers a new user and generates access and refresh tokens.
-   * @param {SignUpDto} body - User registration data.
-   * @returns {Promise<{access_token: string, refresh_token: string}>} The generated access and refresh tokens.
-   * @throws {ConflictException} If the email is already in use.
-   * @throws {InternalServerErrorException} If an error occurs during user creation.
-   ----------------------------------------------------------------------------------------------------- **/
-  async signUp(
-    body: SignUpDto,
-  ): Promise<{ access_token: string; refresh_token: string }> {
+  async signUp(body: SignUpDto): Promise<{
+    access_token: string;
+    refresh_token: string;
+    role: string;
+  }> {
     const user = await this.usersService.findByEmail(body.email);
 
     if (user) {
@@ -147,6 +107,7 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(body.password, 10);
+
     const newUser = await this.usersService.create(
       new User({
         email: body.email,
@@ -154,12 +115,13 @@ export class AuthService {
         name: body.name,
       }),
     );
+
     if (!newUser) {
       throw new InternalServerErrorException({
         message: ErrorCode.AUTH_CREATE_USER_ERROR,
       });
     }
 
-    return await this.generateTokens(newUser);
+    return this.generateTokens(newUser);
   }
 }

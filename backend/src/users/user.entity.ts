@@ -21,42 +21,48 @@ export class User {
   id: string;
 
   /*--------------------------------------------------
-  | AUTHENTICATION                                   |
+  | AUTHENTICATION
   --------------------------------------------------*/
   @Index({ unique: true })
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255, select: false })
   password: string;
 
-  @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    name: 'refresh_token',
+    nullable: true,
+    select: false,
+  })
   refreshToken: string | null;
 
   /*--------------------------------------------------
-  | PROFILE                                          |
+  | PROFILE
   --------------------------------------------------*/
-  @Column({ length: 64 })
+  @Column({ type: 'varchar', length: 128 })
   name: string;
 
-  @Column({ nullable: true })
-  bio?: string;
+  @Column({ type: 'varchar', length: 1024, nullable: true })
+  bio: string | null;
 
   @ManyToOne(() => Nation)
   @JoinColumn({ name: 'nation_id' })
-  nation?: Nation;
+  nation?: Nation | null;
 
   /*--------------------------------------------------
-  | PREFERENCES                                      |
+  | PREFERENCES
   --------------------------------------------------*/
-  @Column({ length: 5, default: 'en' })
-  language: string;
+  @Column({ type: 'varchar', length: 5, nullable: true })
+  language: string | null;
 
-  @Column({ default: 'system' })
+  @Column({ type: 'varchar', length: 12, default: 'system' })
   theme: 'light' | 'dark' | 'system';
 
   /*--------------------------------------------------
-  | AUTHORIZATION                                    |
+  | AUTHORIZATION
   --------------------------------------------------*/
   @Column({
     type: 'enum',
@@ -66,7 +72,7 @@ export class User {
   role: UserRole;
 
   /*--------------------------------------------------
-  | ACCOUNT STATUS                                   |
+  | ACCOUNT STATUS
   --------------------------------------------------*/
   @Column({ name: 'email_verified', default: false })
   emailVerified: boolean;
@@ -74,16 +80,16 @@ export class User {
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
-  @Column({ name: 'last_login_at', nullable: true })
-  lastLoginAt?: Date;
+  @Column({ type: 'datetime', name: 'last_login_at', nullable: true })
+  lastLoginAt: Date | null;
 
   /*--------------------------------------------------
-  | AUDIT                                            |
+  | AUDIT
   --------------------------------------------------*/
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', nullable: true })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   constructor(user: Partial<User>) {

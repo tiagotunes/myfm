@@ -15,34 +15,31 @@ export class Nation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 128 })
   name: string;
 
-  @Column({ nullable: true })
-  demonym: string;
+  @Column({ type: 'varchar', length: 128, nullable: true })
+  demonym: string | null;
 
-  @Column({ length: 2, unique: true })
+  @Column({ type: 'varchar', length: 2, unique: true })
   cca2: string;
 
-  @ManyToOne(() => Continent)
+  @ManyToOne(() => Continent, { nullable: false })
   @JoinColumn({ name: 'continent_id' })
   continent: Continent;
 
-  @ManyToOne(() => Federation)
+  @ManyToOne(() => Federation, { nullable: false })
   @JoinColumn({ name: 'federation_id' })
   federation: Federation;
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
-  /*--------------------------------------------------
-  | AUDIT                                            |
-  --------------------------------------------------*/
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
-  updatedAt?: Date;
+  updatedAt?: Date | null;
 
   constructor(nation: Partial<Nation>) {
     Object.assign(this, nation);

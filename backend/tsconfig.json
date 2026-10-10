@@ -4,9 +4,8 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
 
     "rootDir": "./src",

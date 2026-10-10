@@ -1,3 +1,4 @@
+import { Request as ExpressRequest } from 'express';
 import {
   Controller,
   Post,
@@ -12,8 +13,9 @@ import { AuthService } from '@/auth/auth.service';
 import { SignInDto } from '@/auth/dtos/sing-in.dto';
 import { SignUpDto } from '@/auth/dtos/sign-up.dto';
 import { Public } from '@/common/decorators/public.decorator';
-import { RefreshTokenGuard } from '@/auth/guards/token.guard';
+import { RefreshTokenGuard } from '@/auth/guards/refresh-token.guard';
 import { UserService } from '@/users/user.service';
+import { AuthenticatedUser } from '@/auth/interfaces/auth.types';
 
 @Controller('auth')
 export class AuthController {
@@ -23,14 +25,14 @@ export class AuthController {
   ) {}
 
   @Get('me')
-  getProfile(@Request() req: any) {
+  getProfile(@Request() req: ExpressRequest & { user: AuthenticatedUser }) {
     return this.usersService.getInfo(req.user.id);
   }
 
   @Public()
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
-  refreshToken(@Request() req: any) {
+  refreshToken(@Request() req: ExpressRequest & { user: AuthenticatedUser }) {
     return this.authService.refreshToken(req.user);
   }
 
@@ -43,7 +45,7 @@ export class AuthController {
 
   @Post('sign-out')
   @HttpCode(HttpStatus.NO_CONTENT)
-  signOut(@Request() req: any) {
+  signOut(@Request() req: ExpressRequest & { user: AuthenticatedUser }) {
     return this.authService.signOut(req.user);
   }
 

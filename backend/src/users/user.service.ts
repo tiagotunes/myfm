@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@/users/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '@/users/user.entity';
 
 @Injectable()
 export class UserService {
@@ -10,13 +10,23 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async create(user: Partial<User>): Promise<User | null> {
+  async create(user: Partial<User>): Promise<User> {
     const newUser = this.usersRepository.create(user);
     return await this.usersRepository.save(newUser);
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { id } });
+    return await this.usersRepository.findOne({
+      where: { id },
+    });
+  }
+
+  async findByIdForAuthentication(id: string): Promise<User | null> {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect(['user.password', 'user.refreshToken'])
+      .where('user.id = :id', { id })
+      .getOne();
   }
 
   async getInfo(id: string): Promise<User | null> {
@@ -26,8 +36,19 @@ export class UserService {
         email: true,
         name: true,
         bio: true,
-        nation: { id: true, demonym: true, cca2: true },
+        nation: {
+          id: true,
+          demonym: true,
+          cca2: true,
+        },
         language: true,
+        theme: true,
+        role: true,
+        emailVerified: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+        updatedAt: true,
       },
       where: { id },
       relations: ['nation'],
@@ -35,14 +56,28 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { email } });
+    return await this.usersRepository.findOne({
+      where: { email },
+    });
   }
 
-  async updateLastLogin(userId: string) {
-    await this.usersRepository.update(userId, { lastLoginAt: Date() });
+  async findByEmailForAuthentication(email: string): Promise<User | null> {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect(['user.password', 'user.refreshToken'])
+      .where('user.email = :email', { email })
+      .getOne();
   }
 
-  async updateRefreshToken(userId: string, hash: string | null) {
-    await this.usersRepository.update(userId, { refreshToken: hash });
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      lastLoginAt: new Date(),
+    });
+  }
+
+  async updateRefreshToken(userId: string, hash: string | null): Promise<void> {
+    await this.usersRepository.update(userId, {
+      refreshToken: hash,
+    });
   }
 }

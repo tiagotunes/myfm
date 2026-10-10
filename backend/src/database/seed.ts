@@ -59,4 +59,7 @@ async function bootstrap() {
   await app.close();
 }
 
-bootstrap();
+void bootstrap().catch((error: unknown) => {
+  console.error('Database seeding failed:', error);
+  process.exitCode = 1;
+});

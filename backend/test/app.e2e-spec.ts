@@ -3,12 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { describe, beforeEach, it, expect } from '@jest/globals';
+import { describe, beforeAll, afterAll, it } from '@jest/globals';
 
-describe('AppController (e2e)', () => {
+describe('Health endpoint (e2e)', () => {
   let app: INestApplication<App>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -17,10 +17,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('GET /health returns 200 and status ok without authentication', async () => {
+    await request(app.getHttpServer())
+      .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect({ status: 'ok' });
   });
 });

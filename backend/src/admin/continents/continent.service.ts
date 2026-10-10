@@ -30,7 +30,7 @@ export class ContinentService {
     return continents;
   }
 
-  async getCount(): Promise<Number | null> {
+  async getCount(): Promise<number | null> {
     const nContinents = await this.continetnRepository.count();
     return nContinents;
   }

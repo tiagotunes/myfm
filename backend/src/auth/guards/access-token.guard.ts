@@ -7,10 +7,11 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { ErrorCode } from '@/common/constants/error-codes';
 import { PUBLIC_KEY } from '@/common/decorators/public.decorator';
+import { AuthenticatedUser } from '@/auth/interfaces/auth.types';
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(private readonly reflector: Reflector) {
     super();
   }
 
@@ -24,26 +25,20 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: any, user: any, _: any) {
-    if (err || !user) {
-      throw (
-        err ||
-        new UnauthorizedException({ message: ErrorCode.AUTH_INVALID_TOKEN })
-      );
-    }
-    return user;
-  }
-}
+  handleRequest<TUser = AuthenticatedUser>(
+    err: any,
+    user: TUser | null | undefined,
+    info: any,
+  ): TUser {
+    void info;
 
-@Injectable()
-export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
-  handleRequest(err: any, user: any, info: any) {
     if (err || !user) {
       throw (
         err ||
         new UnauthorizedException({ message: ErrorCode.AUTH_INVALID_TOKEN })
       );
     }
+
     return user;
   }
 }

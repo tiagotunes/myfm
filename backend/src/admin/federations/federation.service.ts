@@ -18,7 +18,7 @@ export class FederationService {
   ) {}
 
   async create(federation: CreateFederationDto): Promise<Federation | null> {
-    var exists = await this.findByAcronym(federation.acronym);
+    let exists = await this.findByAcronym(federation.acronym);
     if (exists) {
       throw new ConflictException({
         message: ErrorCode.FEDERATION_ACRONYM_ALREAY_EXISTS,
@@ -36,7 +36,7 @@ export class FederationService {
   }
 
   async delete(id: string): Promise<DeleteResult> {
-    const _ = await this.getById(id);
+    await this.getById(id);
     return await this.federationRepository.delete({ id });
   }
 
@@ -72,7 +72,7 @@ export class FederationService {
     return federation;
   }
 
-  async getCount(): Promise<Number | null> {
+  async getCount(): Promise<number | null> {
     const nFederations = await this.federationRepository.count();
     return nFederations;
   }
@@ -84,7 +84,7 @@ export class FederationService {
     const federation = await this.getById(id);
 
     if (updatedFederation.acronym) {
-      var exists = await this.findByAcronym(updatedFederation.acronym);
+      const exists = await this.findByAcronym(updatedFederation.acronym);
       if (exists) {
         throw new ConflictException({
           message: ErrorCode.FEDERATION_ACRONYM_ALREAY_EXISTS,
@@ -93,7 +93,7 @@ export class FederationService {
     }
 
     if (updatedFederation.name) {
-      exists = await this.findByName(updatedFederation.name);
+      const exists = await this.findByName(updatedFederation.name);
       if (exists) {
         throw new ConflictException({
           message: ErrorCode.FEDERATION_NAME_ALREAY_EXISTS,
