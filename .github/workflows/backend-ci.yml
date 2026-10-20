@@ -55,3 +55,42 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t myfm-backend:ci .
+
+  deploy-development:
+    name: Deploy development
+    needs: backend-checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:myfm-deploy
+          ping: 100.113.26.20
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEVELOPMENT_DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/myfm_deploy
+          chmod 600 ~/.ssh/myfm_deploy
+
+      - name: Verify server host key
+        run: |
+          ssh-keyscan -T 10 -t ed25519 100.113.26.20 > "$RUNNER_TEMP/server_known_hosts"
+          ssh-keygen -lf "$RUNNER_TEMP/server_known_hosts" | grep -F 'SHA256:bRWJAeomCw2LdY0F9GlQYOv4NJZyebmFY1iz7bLu4xQ'
+          install -m 600 "$RUNNER_TEMP/server_known_hosts" ~/.ssh/known_hosts
+
+      - name: Deploy development
+        run: |
+          ssh -i ~/.ssh/myfm_deploy \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            antunestas@100.113.26.20
