@@ -1,27 +1,41 @@
-# Contributing
+# Contributing to MyFM
 
-This project follows a clean and modular architecture.
+## Development workflow
 
-## General Guidelines
+1. Start from the latest `develop` branch.
+2. Create a feature branch for each change.
+3. Make focused commits with clear messages.
+4. Push the feature branch to GitHub.
+5. Open a pull request targeting `develop`.
+6. Ensure all required GitHub Actions checks pass before merging.
 
-- Keep features small and focused
-- Prefer readability over cleverness
-- Business rules must live in the domain layer
-- UI should not contain business logic
+Use branch names such as:
 
-## Commits
+- `feature/user-profile`
+- `fix/authentication-error`
+- `docs/update-contributing-guide`
 
-Use conventional commit prefixes:
+## Backend checks
 
-- feat:
-- fix:
-- refactor:
-- docs:
-- test:
-- chore:
+The Backend CI workflow runs automatically on pushes and pull requests. It checks:
 
-## Code Style
+- Linting
+- Unit tests
+- End-to-end tests
+- NestJS compilation
+- Docker image build
 
-- Follow Dart and Flutter best practices
-- Avoid large widgets
-- Prefer composition over inheritance
+Run these checks locally before opening a pull request when possible.
+
+## Releases
+
+Changes are promoted from `develop` to `main` through a pull request. The `main` branch represents production-ready code.
+
+Do not commit secrets, passwords, JWT keys, or environment files containing credentials. Keep environment-specific configuration outside version control.
+
+## Pull request expectations
+
+- Explain what changed and why.
+- Keep changes focused and easy to review.
+- Include relevant test results.
+- Address failing required CI checks before merging.
