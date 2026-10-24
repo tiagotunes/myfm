@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: backend-ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   backend-checks:
@@ -94,3 +94,47 @@ jobs:
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             antunestas@100.113.26.20
+
+  deploy-production:
+    name: Deploy production
+    needs: backend-checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: production
+    concurrency:
+      group: myfm-production-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:myfm-deploy
+          ping: 100.113.26.20
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.PRODUCTION_DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/myfm_production_deploy
+          chmod 600 ~/.ssh/myfm_production_deploy
+
+      - name: Verify server host key
+        run: |
+          ssh-keyscan -T 10 -t ed25519 100.113.26.20 > "$RUNNER_TEMP/server_known_hosts"
+          ssh-keygen -lf "$RUNNER_TEMP/server_known_hosts" | grep -F 'SHA256:bRWJAeomCw2LdY0F9GlQYOv4NJZyebmFY1iz7bLu4xQ'
+          install -m 600 "$RUNNER_TEMP/server_known_hosts" ~/.ssh/known_hosts
+
+      - name: Deploy approved commit
+        run: |
+          ssh -i ~/.ssh/myfm_production_deploy \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            antunestas@100.113.26.20 "$GITHUB_SHA"
