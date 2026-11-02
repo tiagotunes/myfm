@@ -1,0 +1,54 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Credentials, certificates and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Node.js
+node_modules/
+dist/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+.eslintcache
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDEs
+.idea/
+*.iml
+
+# Operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Local databases and backups
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.dump
+
+# Docker local overrides
+docker-compose.override.yml
